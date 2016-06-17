@@ -1,11 +1,19 @@
 // EXPRESS
-var express = require('express');
-var router = express.Router();
+var express 				= require('express');
+var router 					= express.Router();
 
 // CONTROLLERS
-var controller_main = require('../controllers/main');
+var controller_location 	= require('../controllers/locations');
+var controller_other		= require('../controllers/other');
 
-/* GET home page. */
-router.get('/', controller_main.index);
+/* GET Request: LOCATIONS	*/
+router.get('/', 					controller_location.homelist		);
+router.get('/location', 			controller_location.locationInfo	);
+router.get('/location/review/new', 	controller_location.addReview		);
 
+/* GET Request: OTHERS		*/
+router.get('/about', 				controller_other.about				);
+		
+
+// Make the Router Property Public to oustide modules
 module.exports = router;
