@@ -5,6 +5,9 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// Connect to MongoDB - No need for variable as we are not using exported methods
+require('./app_server/models/db');
+
 var routes = require('./app_server/routes/index');
 var users = require('./app_server/routes/users');
 

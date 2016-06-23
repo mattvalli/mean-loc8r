@@ -1,21 +1,19 @@
+include _includes/shared-HTML-functions
+
 extends layout
 
 block content
 	.row.page-header
 		.col-lg-12
-			h1 Caova
+			h1= location.name
 	.row
 		.col-xs-lg-12.col-md-9
 			.row
 				.col-xs-12.col-sm-6
 					p.rating
-						span.glyphicon.glyphicon-star
-						span.glyphicon.glyphicon-star
-						span.glyphicon.glyphicon-star
-						span.glyphicon.glyphicon-star-empty
-						span.glyphicon.glyphicon-star-empty
+						+outputRating(location.rating)
 
-					p.address 125 High Street, Reading, RG6 1PS
+					p.address= location.address
 					.panel.panel-primary
 						.panel-heading
 							h2.panel-title Opening Hours
@@ -27,25 +25,19 @@ block content
 					.panel.panel-primary
 						.panel-heading Facilities
 						.panel-body
-							span.label.label-warning
-								span.glyphicon.glyphicon-ok
-								| &nbsp;Hot drinks
-							| &nbsp;
-							span.label.label-warning
-								span.glyphicon.glyphicon-ok
-								| &nbsp;Food
-							| &nbsp;
-							span.label.label-warning
-								span.glyphicon.glyphicon-ok
-								| &nbsp;Premium wifi
-							| &nbsp;
+							each facility in location.facilities
+								span.label.label-warning
+									span.glyphicon.glyphicon-ok
+									| &nbsp; #{		facility	}
+								| &nbsp;
+							
 
 				.col-xs-12.col-sm-6.map-location
 					.panel.panel-primary
 						.panel-heading
 							h2.panel-title Location Map
 						.panel-body
-							img.img-responsive.img-rounded(src='http://maps.googleapis.com/maps/api/staticmap?center=51.455041,- 0.9690884&zoom=17&size=400x350&sensor=false&markers=51.455041,-0.9690884&scale=2')
+							img.img-responsive.img-rounded(src='http://maps.googleapis.com/maps/api/staticmap?center=#{location.map.center.latitude},#{location.map.center.longitude}&zoom=#{location.map.zoom}&size=#{location.map.size.height}x#{location.map.size.width}&sensor=#{location.map.sensor}&markers=#{location.map.markers[0].latitude},#{location.map.markers[0].longitude}&scale=#{location.map.scale}')
 
 			.row
 				.col-xs-12
