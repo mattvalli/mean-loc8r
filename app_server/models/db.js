@@ -15,7 +15,13 @@ var MSG_SHUTDOWN_HIROKU		= "Heroku Application Shutdown";
 var FLAG_EXIT_CLEAN = 0;
 
 // Database URL
-var dbURL 					= "mongodb://localhost/Loc8r";
+	// Local Testing Environment
+	var dbURL 					= "mongodb://localhost/Loc8r";
+	// Production Environment
+	if (process.env.NODE_ENV === 'production') {
+		console.log("process.env.MONGOLAB_URI: " + process.env.MONGOLAB_URI);
+		dbURL = process.env.MONGOLAB_URI;
+	}
 
 // Connect to MongoDB
 mongoose.connect(dbURL);
