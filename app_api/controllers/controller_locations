@@ -1,0 +1,71 @@
+/***********************************************
+	REST API
+	CONTROLLER: 	Locations
+
+	Provides a Data Access Object for Querying MongoDB 
+	using Mongoose
+ ***********************************************/
+
+// CONSTANTS
+var TESTING_VERBOSE			= true;
+var MODEL_DOCUMENT_SCHEMA 	= 'locations';		// Used to select the MongoDB Model Schema
+
+// Import Utilities
+var restUtilities = require('../utilities/utility_rest');
+
+
+if (TESTING_VERBOSE === true) {	console.log("MODEL_DOCUMENT_SCHEMA: " + MODEL_DOCUMENT_SCHEMA);	}
+// Import MongoDB via Mongoose
+var mongoose = require('mongoose');
+var mongo_model_location = mongoose.model(	MODEL_DOCUMENT_SCHEMA	);
+
+
+// CREATE
+	/*
+	 	Returns a response with the following:
+	 		- REST Response Status
+	 */
+	 module.exports.createLocation 	= function(req,res) {
+	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.createLocation");
+	 };
+
+// READ
+	/*
+	 	Returns a response with the following:
+	 		- REST Response Status
+	 		- Location Object
+	 */
+	 module.exports.locationById 	= function(req,res) {
+	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.getById");
+	 	// Send a response to the request via the RESPONSE variable of the session
+	 	restUtilities.sendJsonResponse(res, '200', { 	status: 'sucess'	});
+	 };
+
+	/*
+	 	Returns a response with the following:
+	 		- REST Response Status
+	 		- Location[] Object
+	 */
+	 module.exports.listLocationsByDistance = function(req, res) {
+	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.listLocationsByDistance");
+	 };
+
+// UPDATE
+	/*
+	 	Returns a response with the following:
+	 		- REST Response Status
+	 */
+	 module.exports.updateById 	= function(req,res) {
+	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.updateById");
+	 };
+
+// DELETE
+	/*
+	 	Returns a response with the following:
+	 		- REST Response Status
+	 */
+	 module.exports.deleteById 	= function(req,res) {
+	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.deleteById");
+	 };
+
+

@@ -77,5 +77,5 @@ var locationSchema = new mongoose.Schema({
  *************		SCHEMA COMPILATION	 	*************
  ********************************************************/
  console.log("Compiling Location Schema...");
- mongoose.model('Location',locationSchema);
+ mongoose.model('locations',locationSchema);
  console.log("Compiled");

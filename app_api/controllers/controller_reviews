@@ -1,0 +1,60 @@
+/***********************************************
+	REST API
+	CONTROLLER: 	Reviews
+
+	Provides a Data Access Object for Querying MongoDB 
+	using Mongoose
+ ***********************************************/
+
+// Import Utilities
+var restUtilities = require('../utilities/utility_rest');
+
+// CREATE
+	/*
+	 	Returns a response with the following:
+	 		- REST Response Status
+	 */
+	 module.exports.createLocationReview		= function(req,res) {
+
+	 };
+
+// READ
+	/*
+	 	RETURNS: 	a Review Object in the Response Object as Content with the following:
+	 					- REST Response Status
+	 					- Review Object
+	 */
+	 module.exports.reviewById 					= function(req,res) {
+	 	// Send a response to the request via the RESPONSE variable of the session
+	 	restUtilities.sendJsonResponse(res, '200', { 	status: 'sucess'	});
+	 };
+
+	 /*
+	 	Returns a response with the following:
+	 		- REST Response Status
+	 */
+	 module.exports.listLocationReviews			= function(req,res) {
+
+	 };
+
+// UPDATE
+	/*
+		PURPOSE: 	Updates a Review Result on the Location Sub-Document
+
+	 	RETURNS: 	Returns a response with the following:
+	 					- REST Response Status
+	 */
+	 module.exports.updateById 					= function(req,res) {
+
+	 };
+
+// DELETE
+	/*
+
+	 	Returns a response with the following:
+	 		- REST Response Status
+	 */
+	 module.exports.deleteById 					= function(req,res) {
+
+	 };
+
