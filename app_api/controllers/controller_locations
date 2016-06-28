@@ -41,7 +41,9 @@ var mongo_model_location = mongoose.model(	MODEL_DOCUMENT_SCHEMA	);
 	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.getById");
 
 	 	// Search the Location Schema for a Location using the ID provided in the Request Parameters via the URI
-	 	mongo_model_location.findById(req.params.locationid).exec(function(err, location) {
+	 	mongo_model_location.findById(req.params.locationId).exec(function(err, location) {
+	 		console.log("Inside EXEC");
+	 		console.log('location: ' + location);
 	 		// Send a response to the request via the RESPONSE variable of the session
 	 		restUtilities.sendJsonResponse(res, '200', location);
 	 	});
