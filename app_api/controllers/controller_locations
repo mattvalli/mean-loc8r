@@ -27,6 +27,8 @@ var mongo_model_location = mongoose.model(	MODEL_DOCUMENT_SCHEMA	);
 	 */
 	 module.exports.createLocation 	= function(req,res) {
 	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.createLocation");
+	 	// Send a response to the request via the RESPONSE variable of the session
+	 	restUtilities.sendJsonResponse(res, '201', { 	status: 'created'	});
 	 };
 
 // READ
@@ -37,8 +39,12 @@ var mongo_model_location = mongoose.model(	MODEL_DOCUMENT_SCHEMA	);
 	 */
 	 module.exports.locationById 	= function(req,res) {
 	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.getById");
-	 	// Send a response to the request via the RESPONSE variable of the session
-	 	restUtilities.sendJsonResponse(res, '200', { 	status: 'sucess'	});
+
+	 	// Search the Location Schema for a Location using the ID provided in the Request Parameters via the URI
+	 	mongo_model_location.findById(req.params.locationid).exec(function(err, location) {
+	 		// Send a response to the request via the RESPONSE variable of the session
+	 		restUtilities.sendJsonResponse(res, '200', location);
+	 	});
 	 };
 
 	/*
@@ -48,6 +54,7 @@ var mongo_model_location = mongoose.model(	MODEL_DOCUMENT_SCHEMA	);
 	 */
 	 module.exports.listLocationsByDistance = function(req, res) {
 	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.listLocationsByDistance");
+	 	
 	 };
 
 // UPDATE
