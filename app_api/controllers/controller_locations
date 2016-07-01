@@ -10,6 +10,10 @@
 var TESTING_VERBOSE			= true;
 var MODEL_DOCUMENT_SCHEMA 	= 'locations';		// Used to select the MongoDB Model Schema
 
+// ERROR MESSAGES
+var MSG_ERROR_NO_ID 	= "No locationId in request";
+var MSG_ERROR_NO_RESULT	= "The Location Id provided does not exist";
+
 // Import Utilities
 var restUtilities = require('../utilities/utility_rest');
 
@@ -28,7 +32,7 @@ var mongo_model_location = mongoose.model(	MODEL_DOCUMENT_SCHEMA	);
 	 module.exports.createLocation 	= function(req,res) {
 	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.createLocation");
 	 	// Send a response to the request via the RESPONSE variable of the session
-	 	restUtilities.sendJsonResponse(res, '201', { 	status: 'created'	});
+	 	restUtilities.sendJsonResponse(res, '201', { 	status: restUtilities.STATUS_CREATED 	});
 	 };
 
 // READ
@@ -40,11 +44,35 @@ var mongo_model_location = mongoose.model(	MODEL_DOCUMENT_SCHEMA	);
 	 module.exports.locationById 	= function(req,res) {
 	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.getById");
 
-	 	// Search the Location Schema for a Location using the ID provided in the Request Parameters via the URI
-	 	mongo_model_location.findById(req.params.locationId).exec(function(err, location) {
-	 		// Send a response to the request via the RESPONSE variable of the session
-	 		restUtilities.sendJsonResponse(res, '200', location);
-	 	});
+	 	if (req.params && req.params.locationId ) {
+	 		// Search the Location Schema for a Location using the ID provided in the Request Parameters via the URI
+	 		mongo_model_location.findById(req.params.locationId).exec(function(err, location) {
+
+	 			// If the result set is empty
+	 			if (!location) {
+	 				// Send a NOT FOUND response with a message informing the client that the record doesn't exist
+	 				restUtilities.sendJsonResponse(res, restUtilities.STATUS_NOT_FOUND, {
+	 					"message": MSG_ERROR_NO_RESULT
+	 				});
+	 				return;
+
+	 			} else if(err) {
+	 				restUtilities.sendJsonResponse(res, restUtilities.STATUS_NOT_FOUND, err);
+	 				return;
+	 			}
+	 		
+	 			// Send a response to the request via the RESPONSE variable of the session
+	 			restUtilities.sendJsonResponse(res, restUtilities.STATUS_SUCCESS, location);
+	 		});
+
+	 	} else {
+ 			// Send a NOT FOUND response with a descriptive error message
+ 			restUtilities.sendJsonResponse(res, restUtilities.STATUS_NOT_FOUND, {
+ 				"message": MSG_ERROR_NO_ID
+ 			});
+	 	}
+	 		
+	 	
 	 };
 
 	/*
@@ -55,6 +83,26 @@ var mongo_model_location = mongoose.model(	MODEL_DOCUMENT_SCHEMA	);
 	 module.exports.listLocationsByDistance = function(req, res) {
 	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.listLocationsByDistance");
 	 	
+	 	// Get the a Location from MongoDb though the Location Schema
+	 	mongo_model_location.find().exec(function(err, locations) {
+	 		// Return Response
+	 		restUtilities.sendJsonResponse(res, '200', locations);
+	 	});
+	 };
+
+	 /*
+	 	Returns a response with the following:
+	 		- REST Response Status
+	 		- Location[] Object
+	 */
+	 module.exports.listLocations = function(req, res) {
+	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.listLocationsByDistance");
+	 	
+	 	// Get the a Location from MongoDb though the Location Schema
+	 	mongo_model_location.find().exec(function(err, locations) {
+	 		// Return Response
+	 		restUtilities.sendJsonResponse(res, '200', locations);
+	 	});
 	 };
 
 // UPDATE

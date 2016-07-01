@@ -114,6 +114,10 @@ var test_location_coava = function() {
 			};
 }
 
+var test_location_reup_mongo = function() {
+	return {name:'Re-Up Brew',address:'15235 SE Hathhorne, Portland, OR 97214',phone:'(503) 894-8433',rating:5,facilities:['Hot Drinks','Food','Lightspeed Wifi','Developer Library'],distance:'250m',coords:[-122.6604369, 45.5134441],hoursOfOperation:[{	day:"Monday - Friday",opening:"5:00 AM",closing:"3:00 PM",closed:false},{day:"Saturday",opening:"7:00 AM",closing:"9:00 PM",closed:false},{day:"Sunday",opening:"",closing:"",closed:true}],reviews:[{author:"Matt",rating:5,reviewText:"This is my #1 coffee spot that I take all of my guests to see what they think...so far it's batting 100%!",dateCreated:Date.now},{author:"Greta",rating:4,reviewText:"Yummy!",dateCreated:Date.now},{author:"Michleen",rating:5,reviewText:"Good memories, better coffee!",dateCreated: 	Date.now}]};
+}
+
 var test_location_reup = function() {
 	return { 	name: 			'Re-Up Brew',
 				address: 		'15235 SE Hathhorne, Portland, OR 97214',
@@ -121,6 +125,10 @@ var test_location_reup = function() {
 				rating: 		5,
 				facilities: 	['Hot Drinks', 'Food', 'Lightspeed Wifi', 'Developer Library'],  
 				distance: 		'250m'																};
+}
+
+var test_location_cafe_evangalist_mongo = function() {
+	return {name:'Cafe Evangalist',address:'150 SE Main St, Portland, OR 97214',phone:'(503) 894-8134',rating:4,facilities:['Hot Drinks', 'Food', 'Premium Wifi'],distance:'360m',coords:[-122.6604369, 45.5134441],hoursOfOperation:[{	day:"Monday - Friday",opening:"5:00 AM",closing:"3:00 PM",closed:false},{day:"Saturday",opening:"7:00 AM",closing:"9:00 PM",closed:false},{day:"Sunday",opening:"",closing:"",closed:true}],reviews:[{author:"Tom",rating:4,reviewText:"This is a great place to get work done!",dateCreated:Date.now},{author:"Mark",rating:4,reviewText:"Can't get enough!",dateCreated:Date.now},{author:"Michleen",rating:5,reviewText:"Just like home!",dateCreated:Date.now}]};
 }
 
 var test_location_cafe_evangalist = function() {

@@ -6,6 +6,19 @@
 
  ***********************************************/
 
+
+ // REST RESPONSE STATUS
+module.exports.STATUS_SUCCESS					= '200';
+module.exports.STATUS_CREATED					= '201';
+module.exports.STATUS_NO_CONTENT				= '204';
+module.exports.STATUS_BAD_REQUEST				= '400';
+module.exports.STATUS_UNATHORIZED				= '401';
+module.exports.STATUS_FORBIDDEN					= '403';
+module.exports.STATUS_NOT_FOUND					= '404';
+module.exports.STATUS_METHOD_NOT_ALLOWED		= '405';
+module.exports.STATUS_CONFLICT					= '409';
+module.exports.STATUS_INTERNAL_SERVER_ERRRO		= '500';
+
 /*
 	Updates the HTTP Response Object with a REST Status and Content
 
