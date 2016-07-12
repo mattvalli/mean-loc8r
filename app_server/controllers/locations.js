@@ -34,6 +34,10 @@ var test_data = function() {
 
 /* SAMPLE LOCATIONS AS JSON OBJECTS */
 var test_location_barista = function(){
+	return {name:'BARista',address:'1865 Lincoln Ave, Portland, OR 97214',map:{center:{longitude:- 0.9690884,latitude:51.455041},zoom:17,size:{	height: 400,width:350},sensor:false,markers:[{longitude:-0.9690884,latitude:51.455041}],scale:2},phone:'(503) 894-8134',rating:5,coords:[-122.1596140, 37.4476324],facilities:['Hot Drinks', 'Food', 'Premium Wifi'],distance:'100m'};
+}
+
+var test_location_barista = function(){
 	return { 	name: 			'BARista',
 				address: 		'1865 Lincoln Ave, Portland, OR 97214',
 				map: 			{	center: 	{	longitude: 	- 0.9690884,
@@ -58,7 +62,8 @@ var test_location_barista = function(){
 
 
 var test_location_coava_mongo = function() {
-	return {name:'Coava Coffee Roasters',address:'1300 SE Grand Ave, Portland, OR 97214',phone:'(503) 894-8134',rating:4,facilities:['Hot Drinks', 'Food', 'Premium Wifi'],distance:'100m',coords:[-122.6604370, 45.5134440],hoursOfOperation:[{day:"Monday - Friday",opening:"6:00 AM",closing:"9:00 PM",closed:false},{day:"Saturday",opening:"7:00 AM",closing:"9:00 PM",closed:false},{day:"Sunday",opening:"9:00 AM",closing:"8:00 PM",closed:false}],reviews:[{author:"Matt",rating:4,reviewText:"Coava has some excellent coffee, but what distinguishes them from other Portland-based cafes is their made-to-order drip coffee that is filtered through re-usable, metal filters. This method is not only environmentally-aware, but also allows the natural oils of the beans to pass through the filter, providing a more unique earthy flavor. Great spot, great coffee, great people!",dateCreated:Date.now},{author:"Greta",rating:3,reviewText:"Simply put, hands down the best!",dateCreated:Date.now},{author:"Michleen",rating:3,reviewText:"Good coffee, but not too much seating at the original location which is housed in a shared space with a bamboo wood furnature and flooring company. Worth a look around but not ideal for parties of 4 or more looking for a place to sit. :(",dateCreated: 	Date.now}]};
+	return {name:'Coava',address:'1300 SE Grand Ave, Portland, OR 97214',phone:'(503) 894-8134',rating:4,facilities:['Hot Drinks', 'Food', 'Premium Wifi'],distance:'100m',coords:[-122.6604370, 45.5134440],hoursOfOperation:[{day:"Monday - Friday",opening:"6:00 AM",closing:"9:00 PM",closed:false},{day:"Saturday",opening:"7:00 AM",closing:"9:00 PM",closed:false},{day:"Sunday",opening:"9:00 AM",closing:"8:00 PM",closed:false}],
+	reviews:[{_id: ObjectId(), author:"Matt",rating:4,reviewText:"Coava has some excellent coffee, but what distinguishes them from other Portland-based cafes is their made-to-order drip coffee that is filtered through re-usable, metal filters. This method is not only environmentally-aware, but also allows the natural oils of the beans to pass through the filter, providing a more unique earthy flavor. Great spot, great coffee, great people!",dateCreated:Date.now},{_id: ObjectId(),author:"Greta",rating:3,reviewText:"Simply put, hands down the best!",dateCreated:Date.now},{_id: ObjectId(),author:"Michleen",rating:3,reviewText:"Good coffee, but not too much seating at the original location which is housed in a shared space with a bamboo wood furnature and flooring company. Worth a look around but not ideal for parties of 4 or more looking for a place to sit. :(",dateCreated:Date.now}]};
 }
 
 var test_location_coava = function() {
@@ -115,7 +120,7 @@ var test_location_coava = function() {
 }
 
 var test_location_reup_mongo = function() {
-	return {name:'Re-Up Brew',address:'15235 SE Hathhorne, Portland, OR 97214',phone:'(503) 894-8433',rating:5,facilities:['Hot Drinks','Food','Lightspeed Wifi','Developer Library'],distance:'250m',coords:[-122.6604369, 45.5134441],hoursOfOperation:[{	day:"Monday - Friday",opening:"5:00 AM",closing:"3:00 PM",closed:false},{day:"Saturday",opening:"7:00 AM",closing:"9:00 PM",closed:false},{day:"Sunday",opening:"",closing:"",closed:true}],reviews:[{author:"Matt",rating:5,reviewText:"This is my #1 coffee spot that I take all of my guests to see what they think...so far it's batting 100%!",dateCreated:Date.now},{author:"Greta",rating:4,reviewText:"Yummy!",dateCreated:Date.now},{author:"Michleen",rating:5,reviewText:"Good memories, better coffee!",dateCreated: 	Date.now}]};
+	return {name:'Re-Up Brew',address:'15235 SE Hathhorne, Portland, OR 97214',phone:'(503) 894-8433',rating:5,facilities:['Hot Drinks','Food','Lightspeed Wifi','Developer Library'],distance:'250m',coords:[-122.6604369, 45.5134441],hoursOfOperation:[{	day:"Monday - Friday",opening:"5:00 AM",closing:"3:00 PM",closed:false},{day:"Saturday",opening:"7:00 AM",closing:"9:00 PM",closed:false},{day:"Sunday",opening:"",closing:"",closed:true}],reviews:[{_id: ObjectId(),author:"Matt",rating:5,reviewText:"This is my #1 coffee spot that I take all of my guests to see what they think...so far it's batting 100%!",dateCreated:Date.now},{_id: ObjectId(),author:"Greta",rating:4,reviewText:"Yummy!",dateCreated:Date.now},{_id: ObjectId(),author:"Michleen",rating:5,reviewText:"Good memories, better coffee!",dateCreated: 	Date.now}]};
 }
 
 var test_location_reup = function() {
@@ -128,7 +133,7 @@ var test_location_reup = function() {
 }
 
 var test_location_cafe_evangalist_mongo = function() {
-	return {name:'Cafe Evangalist',address:'150 SE Main St, Portland, OR 97214',phone:'(503) 894-8134',rating:4,facilities:['Hot Drinks', 'Food', 'Premium Wifi'],distance:'360m',coords:[-122.6604369, 45.5134441],hoursOfOperation:[{	day:"Monday - Friday",opening:"5:00 AM",closing:"3:00 PM",closed:false},{day:"Saturday",opening:"7:00 AM",closing:"9:00 PM",closed:false},{day:"Sunday",opening:"",closing:"",closed:true}],reviews:[{author:"Tom",rating:4,reviewText:"This is a great place to get work done!",dateCreated:Date.now},{author:"Mark",rating:4,reviewText:"Can't get enough!",dateCreated:Date.now},{author:"Michleen",rating:5,reviewText:"Just like home!",dateCreated:Date.now}]};
+	return {name:'Cafe Evangalist',address:'150 SE Main St, Portland, OR 97214',phone:'(503) 894-8134',rating:4,facilities:['Hot Drinks', 'Food', 'Premium Wifi'],distance:'360m',coords:[-122.6604369, 45.5134441],hoursOfOperation:[{	day:"Monday - Friday",opening:"5:00 AM",closing:"3:00 PM",closed:false},{day:"Saturday",opening:"7:00 AM",closing:"9:00 PM",closed:false},{day:"Sunday",opening:"",closing:"",closed:true}],reviews:[{_id: ObjectId(),author:"Tom",rating:4,reviewText:"This is a great place to get work done!",dateCreated:Date.now},{_id: ObjectId(),author:"Mark",rating:4,reviewText:"Can't get enough!",dateCreated:Date.now},{_id: ObjectId(),author:"Michleen",rating:5,reviewText:"Just like home!",dateCreated:Date.now}]};
 }
 
 var test_location_cafe_evangalist = function() {

@@ -29,7 +29,7 @@
 	// Create Review under Location
 	router.post('/locations/:locationId/reviews',				controller_review.createLocationReview	);
 	// Get Review under Location
-	router.get('/locations/:locationId/review/:reviewId',		controller_review.reviewById			);
+	router.get('/locations/:locationId/reviews/:reviewId',		controller_review.reviewById			);
 	// Update Review under Location
 	router.put('/locations/:locationId/reviews/:reviewId',		controller_review.updateById			);
 	// Delete Review under Location

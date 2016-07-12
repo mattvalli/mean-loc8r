@@ -17,8 +17,6 @@ var MSG_ERROR_NO_RESULT	= "The Location Id provided does not exist";
 // Import Utilities
 var restUtilities = require('../utilities/utility_rest');
 
-
-if (TESTING_VERBOSE === true) {	console.log("MODEL_DOCUMENT_SCHEMA: " + MODEL_DOCUMENT_SCHEMA);	}
 // Import MongoDB via Mongoose
 var mongoose = require('mongoose');
 var mongo_model_location = mongoose.model(	MODEL_DOCUMENT_SCHEMA	);
