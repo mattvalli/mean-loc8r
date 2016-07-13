@@ -9,6 +9,7 @@
 // CONSTANTS
 var TESTING_VERBOSE			= true;
 var MODEL_DOCUMENT_SCHEMA 	= 'locations';		// Used to select the MongoDB Model Schema
+var MAX_RESULT_SET_SIZE		= 10;				// Limit the number of results returned from MongoDB query
 
 // ERROR MESSAGES
 var MSG_ERROR_NO_ID 	= "No locationId in request";
@@ -23,6 +24,28 @@ var util_geoJSON	= require('../utilities/utility_geoJSON');
 var mongoose = require('mongoose');
 var mongo_model_location = mongoose.model(	MODEL_DOCUMENT_SCHEMA	);
 
+
+var Earth = (function() {
+ 	// CONTANTS
+ 	var RADIUS_EARTH_KILOMETERS = 6371;
+ 	var RADIUS_EARTH_MILES		= 3959;
+
+ 	// Functions
+ 	var getDistanceFromRadians = function(radians) {
+ 		// Radians * Radius
+ 		return parseFloat(radians * RADIUS_EARTH_KILOMETERS);
+ 	};
+
+ 	var getRadiansFromDistance = function(distance) {
+ 		// Distance / Radius
+ 		return parseFloat(distance / RADIUS_EARTH_KILOMETERS);
+ 	};
+
+ 	return {
+ 		getDistanceFromRadians : getDistanceFromRadians,
+ 		getRadiansFromDistance : getRadiansFromDistance
+ 	};
+ })();
 
 // CREATE
 	/*
@@ -85,20 +108,57 @@ var mongo_model_location = mongoose.model(	MODEL_DOCUMENT_SCHEMA	);
 
 	 	// Contruct a Point Object from the Coordinates found in the URL Query
 	 	var geoJSONPoint = urlQueryParser.queryCoordinatesAsPoint(req,res);
+	 	// Get the max distance from the URL Query
+	 	var maxDistance = urlQueryParser.queryMaxDistance(req,res);
 
 	 	// Get the Coordinates as a Point Object from the URL
 	 	if (TESTING_VERBOSE) {
-	 		console.log("URL to Point Object: " + util_geoJSON.pointAsString(geoJSONPoint));
+	 		console.log(	"URL Query - Point Object: " 	+ util_geoJSON.pointAsString(geoJSONPoint) 	+ "\n"
+	 					+	"URL Query - Max Distance: " 	+ maxDistance 								+ "\n"
+	 					+ 	"Converted to Radians: "		+ Earth.getRadiansFromDistance(maxDistance)			);
 	 		
 		}
 
 
-	 	
-	 	// Get the a Location from MongoDb though the Location Schema
-	 	mongo_model_location.find().exec(function(err, locations) {
-	 		// Return Response
-	 		restUtilities.sendJsonResponse(res, '200', locations);
-	 	});
+		// Define the Geo Search as Spherical (Coordinates on Globe)
+		var geoOptions = { "spherical": 	true,
+							"maxDistance": 	Earth.getRadiansFromDistance(maxDistance),
+							"num": 			MAX_RESULT_SET_SIZE  };
+
+		// TODO - DEFINE OPTIONS AND CALLBACK
+
+		// Query MongoDB for Objects near the specified GeoJSON Point/Coordinates
+		mongo_model_location.geoNear(geoJSONPoint, geoOptions, function(err,results,stats) {
+			console.log("Executed geoNear callback");
+			console.log("RESULTS:");
+			console.log(results);
+
+			if ( err ) {
+				restUtilities.sendJsonResponse(res, 404, err);
+			}
+			if ( !results ) {
+				restUtilities.sendJsonResponse(res, '404', {"message":"Could not find any locations within the specified distance"});
+				return;
+			}
+			
+			// Create an Array to store the locations in
+			var locations = [];
+
+			// Process each result as an individual document
+			results.forEach(function(doc) {
+				// Add the Result to the locations array
+				locations.push({
+					"distance": 	Earth.getDistanceFromRadians(doc.dis),
+					"name": 		doc.obj.name,
+					"address": 		doc.obj.address,
+					"rating": 		doc.obj.rating,
+					"facilities:": 	doc.obj.facilities,
+					"_id": 			doc.obj._id	
+				});
+			});
+
+			restUtilities.sendJsonResponse(res, '200', locations);
+		});
 	 };
 
 	 /*

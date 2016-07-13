@@ -35,3 +35,8 @@
  				"coordinates": 	[	parseFloat(req.query.lng)	,
  									parseFloat(req.query.lat)	]	};
  }
+
+ module.exports.queryMaxDistance = function(req,res) {
+ 	if ( !req.query.maxDist ) { return null; }
+ 	return parseFloat(req.query.maxDist);
+ }

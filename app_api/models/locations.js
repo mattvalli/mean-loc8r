@@ -63,7 +63,7 @@ var locationSchema = new mongoose.Schema({
 	// GPS COORDINATES
 	// Global Coordinates for Location in GeoJSON format
 	coords:			{	type: 		[Number],
-						index: 		'2dspher' 			},
+						index: 		'2dsphere' 			},
 
 	// COLLECTIONS
 	// FACILITIES
