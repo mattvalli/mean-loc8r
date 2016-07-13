@@ -1,20 +1,3 @@
-/* GET 'home' page */
-module.exports.homelist = function(req, res) {
-	res.render('list-locations', test_data());
-};
-
-/* GET 'Location' page */
-module.exports.locationInfo = function(req, res) {
-	res.render('detail-location', { title: 		'Location Info',
-									location:  	test_location_barista()	});
-};
-
-/* GET 'Add Review' page */
-module.exports.addReview = function(req, res) {
-	res.render('form-location-review', { title: 'Add Review' });
-};
-
-
 /* TESTING */
 /* Function to hand test data to controller code */
 var test_data = function() {
@@ -62,8 +45,7 @@ var test_location_barista = function(){
 
 
 var test_location_coava_mongo = function() {
-	return {name:'Coava',address:'1300 SE Grand Ave, Portland, OR 97214',phone:'(503) 894-8134',rating:4,facilities:['Hot Drinks', 'Food', 'Premium Wifi'],distance:'100m',coords:[-122.6604370, 45.5134440],hoursOfOperation:[{day:"Monday - Friday",opening:"6:00 AM",closing:"9:00 PM",closed:false},{day:"Saturday",opening:"7:00 AM",closing:"9:00 PM",closed:false},{day:"Sunday",opening:"9:00 AM",closing:"8:00 PM",closed:false}],
-	reviews:[{_id: ObjectId(), author:"Matt",rating:4,reviewText:"Coava has some excellent coffee, but what distinguishes them from other Portland-based cafes is their made-to-order drip coffee that is filtered through re-usable, metal filters. This method is not only environmentally-aware, but also allows the natural oils of the beans to pass through the filter, providing a more unique earthy flavor. Great spot, great coffee, great people!",dateCreated:Date.now},{_id: ObjectId(),author:"Greta",rating:3,reviewText:"Simply put, hands down the best!",dateCreated:Date.now},{_id: ObjectId(),author:"Michleen",rating:3,reviewText:"Good coffee, but not too much seating at the original location which is housed in a shared space with a bamboo wood furnature and flooring company. Worth a look around but not ideal for parties of 4 or more looking for a place to sit. :(",dateCreated:Date.now}]};
+	return {name:'Coava',address:'1300 SE Grand Ave, Portland, OR 97214',phone:'(503) 894-8134',rating:4,facilities:['Hot Drinks', 'Food', 'Premium Wifi'],distance:'100m',coords:[-122.6604370, 45.5134440],hoursOfOperation:[{day:"Monday - Friday",opening:"6:00 AM",closing:"9:00 PM",closed:false},{day:"Saturday",opening:"7:00 AM",closing:"9:00 PM",closed:false},{day:"Sunday",opening:"9:00 AM",closing:"8:00 PM",closed:false}],reviews:[{author:"Matt",rating:4,reviewText:"Coava has some excellent coffee, but what distinguishes them from other Portland-based cafes is their made-to-order drip coffee that is filtered through re-usable, metal filters. This method is not only environmentally-aware, but also allows the natural oils of the beans to pass through the filter, providing a more unique earthy flavor. Great spot, great coffee, great people!",dateCreated:Date.now},{author:"Greta",rating:3,reviewText:"Simply put, hands down the best!",dateCreated:Date.now},{author:"Michleen",rating:3,reviewText:"Good coffee, but not too much seating at the original location which is housed in a shared space with a bamboo wood furnature and flooring company. Worth a look around but not ideal for parties of 4 or more looking for a place to sit. :(",dateCreated:Date.now}]};
 }
 
 var test_location_coava = function() {
@@ -144,5 +126,3 @@ var test_location_cafe_evangalist = function() {
 				facilities: 	['Hot Drinks', 'Food', 'Premium Wifi'],  
 				distance: 		'360m'										};
 }
-
-

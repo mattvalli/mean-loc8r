@@ -3,8 +3,8 @@ var express 				= require('express');
 var router 					= express.Router();
 
 // CONTROLLERS
-var controller_location 	= require('../controllers/locations');
-var controller_other		= require('../controllers/other');
+var controller_location 	= require('../controllers/controller_locations');
+var controller_other		= require('../controllers/controller_other');
 
 /* GET Request: LOCATIONS	*/
 router.get('/', 					controller_location.homelist		);
