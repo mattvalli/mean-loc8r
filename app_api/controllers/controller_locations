@@ -15,7 +15,9 @@ var MSG_ERROR_NO_ID 	= "No locationId in request";
 var MSG_ERROR_NO_RESULT	= "The Location Id provided does not exist";
 
 // Import Utilities
-var restUtilities = require('../utilities/utility_rest');
+var restUtilities 	= require('../utilities/utility_rest');
+var urlQueryParser	= require('../utilities/utility_parser_url_query');
+var util_geoJSON	= require('../utilities/utility_geoJSON');
 
 // Import MongoDB via Mongoose
 var mongoose = require('mongoose');
@@ -80,6 +82,17 @@ var mongo_model_location = mongoose.model(	MODEL_DOCUMENT_SCHEMA	);
 	 */
 	 module.exports.listLocationsByDistance = function(req, res) {
 	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.listLocationsByDistance");
+
+	 	// Contruct a Point Object from the Coordinates found in the URL Query
+	 	var geoJSONPoint = urlQueryParser.queryCoordinatesAsPoint(req,res);
+
+	 	// Get the Coordinates as a Point Object from the URL
+	 	if (TESTING_VERBOSE) {
+	 		console.log("URL to Point Object: " + util_geoJSON.pointAsString(geoJSONPoint));
+	 		
+		}
+
+
 	 	
 	 	// Get the a Location from MongoDb though the Location Schema
 	 	mongo_model_location.find().exec(function(err, locations) {

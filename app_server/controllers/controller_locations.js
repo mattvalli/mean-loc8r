@@ -6,6 +6,13 @@ if (process.env.NODE_ENV === 'production') {
   apiOptions.server = "https://getting-mean-loc8r.herokuapp.com";
 }
 
+var requestOptions = {
+  url : "http://yourapi.com/api/path",
+  method : "GET",
+  json : {},
+  qs: { offset: 20 }
+};
+
 
 /* GET 'home' page */
 module.exports.homelist = function(req, res) {
