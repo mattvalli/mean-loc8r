@@ -28,7 +28,7 @@ var MSG_ERROR_PARAMS_REQUIRED	= "Not Found! The request requires both a Location
 	 	Returns a response with the following:
 	 		- REST Response Status
 	 */
-	 module.exports.createLocationReview		= function(req,res) {
+	 module.exports.create		= function(req,res) {
 
 	 };
 
@@ -38,7 +38,7 @@ var MSG_ERROR_PARAMS_REQUIRED	= "Not Found! The request requires both a Location
 	 					- REST Response Status
 	 					- Review Object
 	 */
-	 module.exports.reviewById 					= function(req,res) {
+	 module.exports.getById 					= function(req,res) {
 	 	if (	TESTING_VERBOSE === true	) 	console.log("****\tEnter app_api.controllers.controller_locations.reviewById\t****");
 
 	 	if (req.params && req.params.locationId ) {

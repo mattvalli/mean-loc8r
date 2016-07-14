@@ -6,8 +6,10 @@
 
  ***********************************************/
 
+// CONSTANTS
+var TESTING_VERBOSE = false;
 
- // REST RESPONSE STATUS
+// REST RESPONSE STATUS
 module.exports.STATUS_SUCCESS					= '200';
 module.exports.STATUS_CREATED					= '201';
 module.exports.STATUS_NO_CONTENT				= '204';
@@ -28,6 +30,8 @@ module.exports.STATUS_INTERNAL_SERVER_ERRRO		= '500';
 		content - Content returned from the respones (Could be HTML, JSON, etc)
 */
  module.exports.sendJsonResponse = function(res, status, content) {
+ 	if (TESTING_VERBOSE === true ) 
+ 		console.log("****\tEnter app_api.utilities.utility_rest.sendJsonResponse\t****");
  	// Attach the current status of the application
  	res.status(status);
  	// Attach the content of the response

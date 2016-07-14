@@ -12,11 +12,12 @@
 
 // Location Requests
 	// List Locations
-	router.get('/locations', 					controller_location.listLocationsByDistance		);
+	router.get('/locations', 					controller_location.listLocations		);
+	router.get('/locationsNearBy', 					controller_location.listLocationsByDistance		);
 	// Create Location
-	router.post('/locations',					controller_location.createLocation				);
+	router.post('/locations',					controller_location.create				);
 	// Read Location by Id
-	router.get('/locations/:locationId', 		controller_location.locationById				);
+	router.get('/locations/:locationId', 		controller_location.getById				);
 	// Update Location By Id
 	router.put('/locations/:locationId',		controller_location.updateById					);
 	// Delete Location By Id
@@ -27,9 +28,9 @@
 	// List Location Reviews
 	router.get('/locations/:locationId/reviews', 				controller_review.listLocationReviews	);
 	// Create Review under Location
-	router.post('/locations/:locationId/reviews',				controller_review.createLocationReview	);
+	router.post('/locations/:locationId/reviews',				controller_review.create	);
 	// Get Review under Location
-	router.get('/locations/:locationId/reviews/:reviewId',		controller_review.reviewById			);
+	router.get('/locations/:locationId/reviews/:reviewId',		controller_review.getById			);
 	// Update Review under Location
 	router.put('/locations/:locationId/reviews/:reviewId',		controller_review.updateById			);
 	// Delete Review under Location

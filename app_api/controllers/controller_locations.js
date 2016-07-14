@@ -52,7 +52,7 @@ var Earth = (function() {
 	 	Returns a response with the following:
 	 		- REST Response Status
 	 */
-	 module.exports.createLocation 	= function(req,res) {
+	 module.exports.create 	= function(req,res) {
 	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.createLocation");
 	 	// Send a response to the request via the RESPONSE variable of the session
 	 	restUtilities.sendJsonResponse(res, '201', { 	status: restUtilities.STATUS_CREATED 	});
@@ -64,7 +64,7 @@ var Earth = (function() {
 	 		- REST Response Status
 	 		- Location Object
 	 */
-	 module.exports.locationById 	= function(req,res) {
+	 module.exports.getById 	= function(req,res) {
 	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.getById");
 
 	 	if (req.params && req.params.locationId ) {
@@ -104,37 +104,53 @@ var Earth = (function() {
 	 		- Location[] Object
 	 */
 	 module.exports.listLocationsByDistance = function(req, res) {
-	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.listLocationsByDistance");
+	 	if (TESTING_VERBOSE === true) console.log("***\tEnter controller_locations.listLocationsByDistance\t****");
+
+
 
 	 	// Contruct a Point Object from the Coordinates found in the URL Query
 	 	var geoJSONPoint = urlQueryParser.queryCoordinatesAsPoint(req,res);
 	 	// Get the max distance from the URL Query
 	 	var maxDistance = urlQueryParser.queryMaxDistance(req,res);
 
+
+	 	console.log("req.query.lng: " + req.query.lng);
+	 	if ( !geoJSONPoint ) {
+				// Get the a Location from MongoDb though the Location Schema
+		 		mongo_model_location.find().exec(function(err, locations) {
+		 		// Return Response
+		 		restUtilities.sendJsonResponse(res, '200', locations);
+		 		return;
+	 		});
+		}
+
 	 	// Get the Coordinates as a Point Object from the URL
 	 	if (TESTING_VERBOSE) {
 	 		console.log(	"URL Query - Point Object: " 	+ util_geoJSON.pointAsString(geoJSONPoint) 	+ "\n"
 	 					+	"URL Query - Max Distance: " 	+ maxDistance 								+ "\n"
 	 					+ 	"Converted to Radians: "		+ Earth.getRadiansFromDistance(maxDistance)			);
-	 		
 		}
 
 
 		// Define the Geo Search as Spherical (Coordinates on Globe)
-		var geoOptions = { "spherical": 	true,
+		var geoOptions = { 	"spherical": 	true,
 							"maxDistance": 	Earth.getRadiansFromDistance(maxDistance),
 							"num": 			MAX_RESULT_SET_SIZE  };
 
 		// TODO - DEFINE OPTIONS AND CALLBACK
 
+		
 		// Query MongoDB for Objects near the specified GeoJSON Point/Coordinates
 		mongo_model_location.geoNear(geoJSONPoint, geoOptions, function(err,results,stats) {
-			console.log("Executed geoNear callback");
-			console.log("RESULTS:");
-			console.log(results);
+			if (TESTING_VERBOSE) {
+				console.log("Executed geoNear callback");
+				console.log("RESULTS:");
+				console.log(results);
+			}
 
 			if ( err ) {
 				restUtilities.sendJsonResponse(res, 404, err);
+				return;
 			}
 			if ( !results ) {
 				restUtilities.sendJsonResponse(res, '404', {"message":"Could not find any locations within the specified distance"});
@@ -158,6 +174,7 @@ var Earth = (function() {
 			});
 
 			restUtilities.sendJsonResponse(res, '200', locations);
+			return;
 		});
 	 };
 
