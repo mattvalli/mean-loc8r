@@ -53,9 +53,49 @@ var Earth = (function() {
 	 		- REST Response Status
 	 */
 	 module.exports.create 	= function(req,res) {
-	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.createLocation");
-	 	// Send a response to the request via the RESPONSE variable of the session
-	 	restUtilities.sendJsonResponse(res, '201', { 	status: restUtilities.STATUS_CREATED 	});
+	 	if (TESTING_VERBOSE === true) 
+	 		console.log("*****\tEnter app_api.controllers.controller_locations.create\t*****");
+
+	 	// Get the Data POSTED to Request via <form>
+	 	var locationFromRequestBody	= {		"name": 				req.body.name,
+	 										"address": 				req.body.address,
+	 										"facilities": 			req.body.facilities.split(','),
+
+	 										"coords": 				[	parseFloat(req.body.lng),
+	 																	parseFloat(req.body.lat)	],
+
+	 										"hoursOfOperation": 	[	
+	 																	{	"days": 	req.body.days,
+	 																		"opening": 	req.body.opening,
+	 																		"closing": 	req.body.closing,
+	 																		"closed": 	req.body.closed 
+	 																	}	
+	 																]
+	 				   };
+
+	 	// Insert the Location into MongoDB
+	 	mongo_model_location.create(locationFromRequestBody, function(err,location) {
+	 		if (TESTING_VERBOSE === true)
+	 			console.log("*****\tEnter app_api.controllers.controller_locations.create.MONGOOOSE.create.anonymous\t*****");
+
+ 			if (err) {
+ 				restUtilities.sendJsonResponse(res, 400, err);
+ 				return;
+ 			}
+
+ 			// If the locations is null
+ 			if ( !location ) {
+ 				// Inform the client
+ 				var message = "The location was not returned by the Database.";
+ 				console.log("!!!!!\t" + message + "\t!!!!!");
+ 				restUtilities.sendJsonResponse(res, 404, {"message":message});
+ 				return;
+ 			}
+
+ 			// Send a response to the request via the RESPONSE variable of the session
+		 	restUtilities.sendJsonResponse(res, '201', { 	status: restUtilities.STATUS_CREATED 	});
+		 	return;
+	 	});
 	 };
 
 // READ
@@ -86,6 +126,7 @@ var Earth = (function() {
 	 		
 	 			// Send a response to the request via the RESPONSE variable of the session
 	 			restUtilities.sendJsonResponse(res, restUtilities.STATUS_SUCCESS, location);
+	 			return;
 	 		});
 
 	 	} else {
@@ -93,6 +134,7 @@ var Earth = (function() {
  			restUtilities.sendJsonResponse(res, restUtilities.STATUS_NOT_FOUND, {
  				"message": MSG_ERROR_NO_ID
  			});
+ 			return;
 	 	}
 	 		
 	 	
@@ -119,7 +161,7 @@ var Earth = (function() {
 				// Get the a Location from MongoDb though the Location Schema
 		 		mongo_model_location.find().exec(function(err, locations) {
 		 		// Return Response
-		 		restUtilities.sendJsonResponse(res, '200', locations);
+		 		restUtilities.sendJsonResponse(res, 200, locations);
 		 		return;
 	 		});
 		}
@@ -153,7 +195,7 @@ var Earth = (function() {
 				return;
 			}
 			if ( !results ) {
-				restUtilities.sendJsonResponse(res, '404', {"message":"Could not find any locations within the specified distance"});
+				restUtilities.sendJsonResponse(res, 404, {"message":"Could not find any locations within the specified distance"});
 				return;
 			}
 			
@@ -189,7 +231,8 @@ var Earth = (function() {
 	 	// Get the a Location from MongoDb though the Location Schema
 	 	mongo_model_location.find().exec(function(err, locations) {
 	 		// Return Response
-	 		restUtilities.sendJsonResponse(res, '200', locations);
+	 		restUtilities.sendJsonResponse(res, 200, locations);
+	 		return;
 	 	});
 	 };
 
@@ -200,6 +243,8 @@ var Earth = (function() {
 	 */
 	 module.exports.updateById 	= function(req,res) {
 	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.updateById");
+
+	 	return;
 	 };
 
 // DELETE
@@ -209,6 +254,8 @@ var Earth = (function() {
 	 */
 	 module.exports.deleteById 	= function(req,res) {
 	 	if (TESTING_VERBOSE === true) console.log("Enter controller_locations.deleteById");
+
+	 	return;
 	 };
 
 

@@ -23,6 +23,9 @@ var FLAG_EXIT_CLEAN = 0;
 		dbURL = process.env.MONGOLAB_URI;
 	}
 
+	// *********** UPDATES MongoDB PROMISES *************
+	mongoose.Promise = global.Promise;
+
 // Connect to MongoDB
 mongoose.connect(dbURL);
 
