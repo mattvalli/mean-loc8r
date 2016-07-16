@@ -25,7 +25,7 @@ var TESTING_VERBOSE = true;
 
  	// If the request does not contain a Lat
  	if ( !req.query.lng 	|| 		!req.query.lat ) {
- 		return null;
+ 		return {"message":"lng and lat query parameters are required"};
  	}
 
  	// Else Construct the Coords Array
@@ -37,10 +37,21 @@ var TESTING_VERBOSE = true;
  	if (TESTING_VERBOSE === true ) 
  		console.log("****\tEnter app_api.utilities.utility_parser_url_query.queryCoordinatesAsPoint\t****");
 
- 	// Construct a Point Object
- 	return { 	"type": 		"Point", 
- 				"coordinates": 	[	parseFloat(req.query.lng)	,
- 									parseFloat(req.query.lat)	]	};
+ 	// Store the response
+ 	var response = this.queryCoordinates(req,res);
+
+ 	// If the response from this.queryCoordinates does not contain a message
+ 	if (!response.message) {
+ 		// Construct and Return a Point Object
+ 		return { 	"type": 		"Point", 
+ 					"coordinates": 	response	};
+ 	}
+
+ 	if (TESTING_VERBOSE)
+ 		console.log("!!!!!\tRequest Failed: " + response.message + "\t!!!!!");
+
+  	// Otherwise, we should return the response from this.queryCoordinates
+ 	return response;
  }
 
  module.exports.queryMaxDistance = function(req,res) {

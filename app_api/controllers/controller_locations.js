@@ -87,7 +87,9 @@ var Earth = (function() {
  			if ( !location ) {
  				// Inform the client
  				var message = "The location was not returned by the Database.";
- 				console.log("!!!!!\t" + message + "\t!!!!!");
+ 				if (TESTING_VERBOSE === true)
+ 					console.log("!!!!!\t" + message + "\t!!!!!");
+
  				restUtilities.sendJsonResponse(res, 404, {"message":message});
  				return;
  			}
@@ -146,7 +148,7 @@ var Earth = (function() {
 	 		- Location[] Object
 	 */
 	 module.exports.listLocationsByDistance = function(req, res) {
-	 	if (TESTING_VERBOSE === true) console.log("***\tEnter controller_locations.listLocationsByDistance\t****");
+	 	if (TESTING_VERBOSE === true) console.log("****\tEnter controller_locations.listLocationsByDistance\t****");
 
 
 
@@ -156,7 +158,7 @@ var Earth = (function() {
 	 	var maxDistance = urlQueryParser.queryMaxDistance(req,res);
 
 
-	 	console.log("req.query.lng: " + req.query.lng);
+	 	if (TESTING_VERBOSE === true) console.log("req.query.lng: " + req.query.lng);
 	 	if ( !geoJSONPoint ) {
 				// Get the a Location from MongoDb though the Location Schema
 		 		mongo_model_location.find().exec(function(err, locations) {
@@ -200,20 +202,7 @@ var Earth = (function() {
 			}
 			
 			// Create an Array to store the locations in
-			var locations = [];
-
-			// Process each result as an individual document
-			results.forEach(function(doc) {
-				// Add the Result to the locations array
-				locations.push({
-					"distance": 	Earth.getDistanceFromRadians(doc.dis),
-					"name": 		doc.obj.name,
-					"address": 		doc.obj.address,
-					"rating": 		doc.obj.rating,
-					"facilities:": 	doc.obj.facilities,
-					"_id": 			doc.obj._id	
-				});
-			});
+			var locations = geoNearSetToLocationListArray(results);
 
 			restUtilities.sendJsonResponse(res, '200', locations);
 			return;
@@ -258,4 +247,31 @@ var Earth = (function() {
 	 	return;
 	 };
 
+
+// CONVENIENCE METHODS
+	// CALL BACK METHODS
+	/* Converts a Result Set from MongoDB and converts the data into a relevent Object */
+	var geoNearSetToLocationListArray = function (geoNearResultSet) {
+		if (TESTING_VERBOSE === true)
+			console.log("*****\tEnter app_api.controllers.controller_locations.geoNearSetToLocationArray\t*****");
+		// Create an Array to store the locations in
+		var locations = [];
+
+		// Process each result as an individual document
+		geoNearResultSet.forEach(function(doc) {
+			console.log(doc.obj.name);
+
+			// Add the Result to the locations array
+			locations.push({
+				"distance": 	Earth.getDistanceFromRadians(doc.dis),
+				"name": 		doc.obj.name,
+				"address": 		doc.obj.address,
+				"rating": 		doc.obj.rating,
+				"facilities:": 	doc.obj.facilities,
+				"_id": 			doc.obj._id	
+			});
+		});
+
+		return locations;
+	}
 
