@@ -24,6 +24,9 @@ var util_geoJSON	= require('../utilities/utility_geoJSON');
 var mongoose = require('mongoose');
 var mongo_model_location = mongoose.model(	MODEL_DOCUMENT_SCHEMA	);
 
+// Import Subdocument Controllers
+var reviewController = require('./controller_reviews');
+
 
 var Earth = (function() {
  	// CONTANTS
@@ -236,6 +239,7 @@ var Earth = (function() {
 	 	return;
 	 };
 
+
 // DELETE
 	/*
 	 	Returns a response with the following:
@@ -249,6 +253,40 @@ var Earth = (function() {
 
 
 // CONVENIENCE METHODS
+	// CALCULATIONS
+	/* Update the Average Rating for a Location
+	 */
+	module.exports.updateAverageRating = function (location) {
+		if (TESTING_VERBOSE === true ) 
+ 		console.log("****\tEnter app_api.controllers.controller_locations.updateAverageRating\t****");
+
+		var ratingTotal, ratingAverage, reviewCount, i;
+
+		if (location.reviews && location.reviews.length > 0) {
+			// Get all Reviews for the Location matching the provided ID
+			reviewCount = location.reviews.length;
+			ratingTotal = 0;
+
+			// Loop through each review and sum the rating property
+			for (i = 0; i < reviewCount; i++) {
+				// Get the review at the current index and add its' rating to the total
+				ratingTotal += location.reviews[i].rating;
+			}
+
+			// Divide the Sum of Ratings by the Number of Reviews (array.length)
+			ratingAverage = parseInt(	ratingTotal / reviewCount,	10	);
+
+			// Update the Location object and Persist
+			location.rating = ratingAverage;
+			location.save(function (err) {
+				if (err) {	console.log(err);	}
+
+				// Success
+				console.log("Average Rating update to: " + ratingAverage);
+			});
+		}
+	}
+
 	// CALL BACK METHODS
 	/* Converts a Result Set from MongoDB and converts the data into a relevent Object */
 	var geoNearSetToLocationListArray = function (geoNearResultSet) {
@@ -274,4 +312,3 @@ var Earth = (function() {
 
 		return locations;
 	}
-

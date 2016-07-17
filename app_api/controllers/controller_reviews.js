@@ -17,20 +17,92 @@ var restUtilities = require('../utilities/utility_rest');
 var mongoose = require('mongoose');
 var mongo_model_location = mongoose.model(	MODEL_DOCUMENT_SCHEMA	);
 
+// Import API Modules
+var module_location = require('./controller_locations');
+
 // CONSTANTS - CONTROLLER
 var MSG_LOCATION_ID_NOT_FOUND	= "The requested Location Id could not be found";
 var MSG_REVIEW_ID_NOT_FOUND 	= "The requested Review Id could not be found";
 var MSG_RESULT_SET_EMPTY_REVIEW	= "No Reviews Found";
 var MSG_ERROR_PARAMS_REQUIRED	= "Not Found! The request requires both a Location and Review Id";
 
+
+// Make functions publicly available that also are used within the module
+module.exports = {
+	"addReview": addReview,
+	"reviewJSONViaPostMethod": reviewJSONViaPostMethod
+}
+
 // CREATE
 	/*
 	 	Returns a response with the following:
 	 		- REST Response Status
 	 */
-	 module.exports.create		= function(req,res) {
+	module.exports.create		= function(req,res) {
+	 	if (	TESTING_VERBOSE === true	) 	console.log("****\tEnter app_api.controllers.controller_locations.create\t****");
 
-	 };
+	 	// Get the Location ID from the URL Parameters HashMap
+	 	var locationId = req.params.locationId;
+
+	 	// If the Location Id is null
+	 	if (!locationId) {
+	 		// Inform the user via the response message
+	 		restUtilities.sendJsonResponse(res,404,{"message":"You are required to provided location id in the URL."});
+	 		return;
+	 	}
+
+	 	// Find the location in MongoDB
+	 	mongo_model_location.findById(locationId)
+	 						.select("reviews")
+	 						.exec(function(err,location) {
+	 							// If error
+	 							if (err) {
+	 								restUtilities.sendJsonResponse(res,400,err);
+	 								return;
+	 							}
+
+	 							// Add a Review to the Reviews Subdocument
+	 							addReview(req,res,location);
+	 							return;
+	 						});
+	};
+
+	/* Add a review to the location provided
+	 */
+	var addReview = function (req, res, location) {
+	  	if (	TESTING_VERBOSE === true	) 	console.log("****\tEnter app_api.controllers.controller_locations.addReview\t****");
+
+	  	// If the Location is null
+	  	if (!location) {
+	  		restUtilities.sendJsonResponse(res,404,{"message":"The Location ID could not be found."});
+	  		return;
+	  	}
+
+	  	// Push the Review into the Location.Reviews
+	  	location.reviews.push(	reviewJSONViaPostMethod(req,res)	);
+
+	  	// Save the updated Location
+	  	location.save(function(err,location) {
+	  		// Handle Error
+	  		if (err) {
+	  			restUtilities.sendJsonResponse(res,400,err);
+	  			return;
+	  		}
+
+	  		// Update the properties requiring processing
+	  		module_location.updateAverageRating(location);
+
+	  		// Retrieve the Review just added to the location and return it in the response
+	  		restUtilities.sendJsonResponse(res, 201, location.reviews[location.reviews.length - 1]);
+	  		return;
+	  	});
+	};
+
+	/* Updates the Average Rating for the location
+	 */
+	module.exports.updateAverageRating = function() {
+		if (	TESTING_VERBOSE === true	) 	console.log("****\tEnter app_api.controllers.controller_locations.updateAverageRating\t****");
+	}
 
 // READ
 	/*
@@ -211,4 +283,12 @@ var MSG_ERROR_PARAMS_REQUIRED	= "Not Found! The request requires both a Location
 	 module.exports.deleteById 					= function(req,res) {
 
 	 };
+
+// CONVENIENCE METHODS
+	/* Get the review object via the POST Method */
+	var reviewJSONViaPostMethod = function(req,res) {
+		return {	"author": 		req.body.author,
+					"rating": 		req.body.rating,
+					"reviewText": 	req.body.reviewText	};
+	};
 
