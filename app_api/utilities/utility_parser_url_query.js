@@ -31,14 +31,14 @@ var TESTING_VERBOSE = true;
  	// Else Construct the Coords Array
  	return [	parseFloat(req.query.lng)	,
  				parseFloat(req.query.lat)	];
- }
+ };
 
  module.exports.queryCoordinatesAsPoint = function(req,res) {
  	if (TESTING_VERBOSE === true ) 
  		console.log("****\tEnter app_api.utilities.utility_parser_url_query.queryCoordinatesAsPoint\t****");
 
  	// Store the response
- 	var response = this.queryCoordinates(req,res);
+ 	var response = this.queryCoordinates(req,res);	
 
  	// If the response from this.queryCoordinates does not contain a message
  	if (!response.message) {
@@ -52,7 +52,7 @@ var TESTING_VERBOSE = true;
 
   	// Otherwise, we should return the response from this.queryCoordinates
  	return response;
- }
+ };
 
  module.exports.queryMaxDistance = function(req,res) {
  	if (TESTING_VERBOSE === true ) 
@@ -60,4 +60,5 @@ var TESTING_VERBOSE = true;
 
  	if ( !req.query.maxDist ) { return null; }
  	return parseFloat(req.query.maxDist);
- }
+ };
+

@@ -33,7 +33,9 @@ var reviewSchema = new mongoose.Schema({
 							max: 			5 			},
 	reviewText: 	String,
 	dateCreated: 	{		type: 			Date,
-							"default": 		Date.now	}
+							"default": 		Date.now	},
+	dateUpdated: 	{		type: 			Date,
+							"default": 		Date.now	} 
 });
 
 

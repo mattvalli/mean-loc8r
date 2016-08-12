@@ -11,11 +11,12 @@ var TESTING_VERBOSE			= true;
 var MODEL_DOCUMENT_SCHEMA 	= 'locations';		// Used to select the MongoDB Model Schema
 
 // Import Utilities
-var restUtilities = require('../utilities/utility_rest');
+var bodyParser		= require('body-parser');
+var restUtilities 	= require('../utilities/utility_rest');
 
 // Import MongoDB via Mongoose
-var mongoose = require('mongoose');
-var mongo_model_location = mongoose.model(	MODEL_DOCUMENT_SCHEMA	);
+var mongoose 				= require('mongoose');
+var mongo_model_location 	= mongoose.model(	MODEL_DOCUMENT_SCHEMA	);
 
 // Import API Modules
 var module_location = require('./controller_locations');
@@ -79,7 +80,13 @@ module.exports = {
 	  	}
 
 	  	// Push the Review into the Location.Reviews
-	  	location.reviews.push(	reviewJSONViaPostMethod(req,res)	);
+	  	var review = reviewJSONViaPostMethod(req,res);
+	  	console.log("REVIEW" + "\n"
+	  				+ "review.author: " 		+ review.author 		+ "\n"
+	  				+ "review.rating: " 		+ review.rating 		+ "\n"
+	  				+ "review.reviewText: " 	+ review.reviewText 	+ "\n"
+	  				+ "review.dateUpdated: " 	+ review.dateUpdated			);
+	  	location.reviews.push(	review	);
 
 	  	// Save the updated Location
 	  	location.save(function(err,location) {
@@ -90,19 +97,13 @@ module.exports = {
 	  		}
 
 	  		// Update the properties requiring processing
-	  		module_location.updateAverageRating(location);
+	  		module_location.updateAverageRating(location._id);
 
 	  		// Retrieve the Review just added to the location and return it in the response
 	  		restUtilities.sendJsonResponse(res, 201, location.reviews[location.reviews.length - 1]);
 	  		return;
 	  	});
 	};
-
-	/* Updates the Average Rating for the location
-	 */
-	module.exports.updateAverageRating = function() {
-		if (	TESTING_VERBOSE === true	) 	console.log("****\tEnter app_api.controllers.controller_locations.updateAverageRating\t****");
-	}
 
 // READ
 	/*
@@ -271,7 +272,77 @@ module.exports = {
 	 					- REST Response Status
 	 */
 	 module.exports.updateById 					= function(req,res) {
+	 	if ( TESTING_VERBOSE === true ) {
+	 		console.log("****\tEnter app_api.controllers.controller_locations.updateById\t****");
+	 	}
 
+	 	
+
+	 	// Local Scope Variables
+	 	var reviewById;
+
+	 	// Ensure that the Location ID has been provided as a Request Parameter
+	 	if ( ! req.params.locationId ) {
+	 		// If NOT respond with 404 Code
+	 		restUtilities.sendJsonResponse(res, 404, {"message": "Not Found! A Location ID must be provided."});
+	 		return;
+	 	}
+
+	 	// Ensure that the Location ID has been provided as a Request Parameter
+	 	if ( ! req.params.reviewId ) {
+	 		// If NOT respond with 404 Code
+	 		restUtilities.sendJsonResponse(res, 404, {"message": "Not Found! A Review ID must be provided."});
+	 		return;
+	 	}
+
+	 	// Use the Location ID provided as a Request Parameter
+	 	// Select only the relevent info
+	 	mongo_model_location.findById(req.params.locationId)
+	 						.select('reviews')
+	 						.exec(function(err,location){
+	 							// Handle Error
+								if (err) {
+									restUtilities.sendJsonResponse(res, 400, err);
+									return;
+								}
+
+								// Handle a Null Location
+								if ( ! location ) {
+									restUtilities.sendJsonResponse(res,404, {"message": "Could not find a location matching the Location ID"});
+									return;
+								}
+								// Check to see if the location.reviews exists
+								if ( !location.reviews || location.reviews <= 0 ) {
+									restUtilities.sendJsonResponse(res, 404, "The Location does not contain any Reviews");
+								}
+
+								// The Location has Reviews
+								// Select the review by its ID
+								reviewById = location.reviews.id(req.params.reviewId);
+
+								// Handle a null object
+								if ( ! reviewById ) {
+									restUtilities.sendJsonResponse(res,404,{"message":"Could not find a review matching hhe Review ID"});
+									return;
+								}
+
+								// Update the instance properties
+								updateReviewFromRequestBody(req,reviewById);
+
+								// Save the location
+								location.save(function(err,location) {
+									// Handle Error as result of Save
+									if (err) {
+										restUtilities.sendJsonResponse(res, 404, err);
+										return;
+									}
+
+									// Success
+									module_location.updateAverageRating(location._id);
+									restUtilities.sendJsonResponse(res,200,location.reviews.id(req.params.reviewId));
+								});
+	 						});
+	 	return;
 	 };
 
 // DELETE
@@ -280,15 +351,95 @@ module.exports = {
 	 	Returns a response with the following:
 	 		- REST Response Status
 	 */
-	 module.exports.deleteById 					= function(req,res) {
+	module.exports.deleteById 					= function(req,res) {
+		// Check to see if the Location and Review IDs have been supplied via URL Parameters
+		if ( ! req.params.locationId || ! req.params.reviewId ) {
+			restUtilities.sendJsonResponse(res, 404, {"message": "Not found, locationId and reviewId are both required", });
+		}
 
-	 };
+		// Select only the Reviews from the Location
+		mongo_model_location.findById(req.params.locationId)
+							.select('reviews')
+							.exec(function(err,location){
+								// Handle any Errors
+								if (err) {
+									restUtilities.sendJsonResponse(res, 400, err);
+									return;
+								}
+
+								// Check to see if the location exists
+								if ( ! location ) {
+									// Respond to the request
+									restUtilities.sendJsonResponse(res,404,{"message": "Location ID not found"});
+									return;
+								}
+
+								// Ensure the Locations has reviews
+								if (location.reviews && location.reviews.length > 0) {
+									// Check to see if the Specific Review exists
+									if ( ! location.reviews.id(req.params.reviewId) ) {
+										restUtilities.sendJsonResponse(res,404,{"message": "Review ID not found"});
+										return;
+									}
+
+								// The review exists, now delete
+									location.reviews.id(req.params.reviewId).remove();
+
+									// Save the changes to the Location Document
+									location.save(function(err,location) {
+										// Handle any Errors
+										if (err) {
+											restUtilities.sendJsonResponse(res,400,err);
+											return;
+										} else {
+											// Success
+											// Update the Overall Rating of the Location
+											module_location.updateAverageRating(location._id);
+											// Return Null as appropriate with DELETE Request Method
+											restUtilities.sendJsonResponse(res,204, null);
+											return;
+										}
+									});
+								} else {
+									// There are no reviews
+									restUtilities.sendJsonResponse(res, 404, {"message": "No reviews to delete" });
+									return;
+								}
+							}); 
+	};
+
 
 // CONVENIENCE METHODS
+	// UPDATE
+		var updateReviewFromRequestBody = function(req,review){
+			if (TESTING_VERBOSE === true) {
+				console.log("****\tEnter app_api.controllers.controller_reviews.updateReviewFromRequestBody\t****");
+				console.log("REQUEST BODY DUMP");
+				console.log("req.body.author: " 	+ req.body.author);
+				console.log("req.body.rating: " 	+ req.body.rating);
+				console.log("req.body.reviewText: " + req.body.reviewText);
+			}
+
+			// Use the Review Reference to update the Review
+			review.author		= 	req.body.author;
+			review.rating 		=	req.body.rating;
+			review.reviewText	=	req.body.reviewText;
+			review.dateUpdated 	= 	new Date();
+		};
 	/* Get the review object via the POST Method */
 	var reviewJSONViaPostMethod = function(req,res) {
+		if (TESTING_VERBOSE === true) {
+				console.log("****\tEnter app_api.controllers.controller_reviews.reviewJSONViaPostMethod\t****");
+				console.log("REQUEST BODY DUMP");
+				console.log("req.body.author: " 	+ req.body.author);
+				console.log("req.body.rating: " 	+ req.body.rating);
+				console.log("req.body.reviewText: " + req.body.reviewText);
+				console.log("dateUpdated: " + new Date());
+			}
+
 		return {	"author": 		req.body.author,
 					"rating": 		req.body.rating,
-					"reviewText": 	req.body.reviewText	};
+					"reviewText": 	req.body.reviewText,
+					"dateUpdated": 	new Date()				};
 	};
 
