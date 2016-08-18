@@ -40,6 +40,11 @@ var TESTING_VERBOSE = true;
  	// Store the response
  	var response = this.queryCoordinates(req,res);	
 
+ 	if (TESTING_VERBOSE) {
+ 		if (! response.message) 
+ 		console.log("coordinates: [" + response[0] + ", " + response[1] + "]");
+ 	}
+
  	// If the response from this.queryCoordinates does not contain a message
  	if (!response.message) {
  		// Construct and Return a Point Object
@@ -58,7 +63,16 @@ var TESTING_VERBOSE = true;
  	if (TESTING_VERBOSE === true ) 
  		console.log("****\tEnter app_api.utilities.utility_parser_url_query.queryMaxDistance\t****");
 
- 	if ( !req.query.maxDist ) { return null; }
- 	return parseFloat(req.query.maxDist);
+ 	// If both 'maxDist' AND 'maxDistance' are null, return null
+ 	if ( !req.query.maxDist && !req.query.maxDistance ) { return null; }
+
+ 	// If 'maxDistance' is null, use 'maxDist'
+ 	if ( !req.query.maxDistance ) {
+ 		// 'maxDist' must contain a value, parse and return
+ 		return parseFloat(req.query.maxDist);
+ 	}
+
+ 	// 'maxDistance' contains a value, parse and return
+ 	return parseFloat(req.query.maxDistance);
  };
 

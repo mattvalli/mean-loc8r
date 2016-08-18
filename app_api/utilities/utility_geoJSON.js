@@ -33,8 +33,24 @@
  */
  module.exports.pointAsString = function(point) {
  	return 				"POINT OBJECT"								+ "\n"
+ 					+ 	"point.type: "	+ point.type				+ "\n"
  					+	"point.lng: " 	+ point.coordinates[0]		+ "\n"
  					+	"point.lat: "	+ point.coordinates[1];
  };
 
+/* Formats data for display in the view
+ */
+module.exports.formatDistance = function(distance) {
+	// Local Vars
+	var numDistance, unit;
+	if (distance > 1000) {
+		// Distance is greater than a Kilometer
+		numDistance = parseFloat( distance / 1000 ).toFixed(1);
+		unit = 'km';
+	} else {
+		numDistance = parseInt(distance);
+		unit = 'm';
+	}
 
+	return numDistance + ' ' + unit;
+};

@@ -156,7 +156,6 @@ var Earth = (function() {
 	 	var maxDistance = urlQueryParser.queryMaxDistance(req,res);
 
 
-	 	if (TESTING_VERBOSE === true) console.log("req.query.lng: " + req.query.lng);
 	 	if ( !geoJSONPoint ) {
 				// Get the a Location from MongoDb though the Location Schema
 		 		mongo_model_location.find().exec(function(err, locations) {
@@ -168,9 +167,9 @@ var Earth = (function() {
 
 	 	// Get the Coordinates as a Point Object from the URL
 	 	if (TESTING_VERBOSE) {
-	 		console.log(	"URL Query - Point Object: " 	+ util_geoJSON.pointAsString(geoJSONPoint) 	+ "\n"
-	 					+	"URL Query - Max Distance: " 	+ maxDistance 								+ "\n"
-	 					+ 	"Converted to Radians: "		+ Earth.getRadiansFromDistance(maxDistance)			);
+	 		console.log(	"URL Query - Point Object: " 	+ "\n" + util_geoJSON.pointAsString(geoJSONPoint) 	+ "\n"
+	 					+	"URL Query - Max Distance: " 	+ maxDistance 										+ "\n"
+	 					+ 	"Converted to Radians: "		+ Earth.getRadiansFromDistance(maxDistance)					);
 		}
 
 
@@ -178,9 +177,6 @@ var Earth = (function() {
 		var geoOptions = { 	"spherical": 	true,
 							"maxDistance": 	Earth.getRadiansFromDistance(maxDistance),
 							"num": 			MAX_RESULT_SET_SIZE  };
-
-		// TODO - DEFINE OPTIONS AND CALLBACK
-
 		
 		// Query MongoDB for Objects near the specified GeoJSON Point/Coordinates
 		mongo_model_location.geoNear(geoJSONPoint, geoOptions, function(err,results,stats) {
@@ -272,33 +268,6 @@ var Earth = (function() {
 	 						});
 	 	return;
 	 };
-
-	// UPDATE -- CALLBACKS
-	var callback_update_location = function(err, location) {
-		console.log("*****\tEnter app_api.controllers.controller_locations.callback_update_location\t*****");
-		/*
-		// Handle Error
-		if (err) {
-			restUtilities.sendJsonResponse(res, 400, err);
-			return;
-		}
-
-		// Handle a Null Location
-		if ( ! location ) {
-			restUtilities.sendJsonResponse(res,404, {"message": "Could not find a location matching the Location ID"});
-			return;
-		}
-
-		// Update the instance properties
-		module.exports.locationFromRequestBody(req,location);
-		*/
-
-	};
-
-	var callback_update_location_review = function(err, review) {
-
-	};
-
 
 // DELETE
 	/*
@@ -453,7 +422,7 @@ var Earth = (function() {
 				"name": 		doc.obj.name,
 				"address": 		doc.obj.address,
 				"rating": 		doc.obj.rating,
-				"facilities:": 	doc.obj.facilities,
+				"facilities": 	doc.obj.facilities,
 				"_id": 			doc.obj._id	
 			});
 		});

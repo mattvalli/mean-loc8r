@@ -17,7 +17,7 @@
 
 /* TESTING */
 /* Function to hand test data to controller code */
-module.exports.testSampleListLocationsJSON = function() {
+module.exports.testSampleListLocationsJSON = function(responseBody, message) {
 	if (TESTING_VERBOSE === true ) 
 		console.log("****\tEnter app_server.testdata.test_locations.testSampleListLocationsJSON\t****");
 
@@ -28,10 +28,8 @@ module.exports.testSampleListLocationsJSON = function() {
 
 				"sidebar": 		'Looking for wifi and a seat? Loc8r helps you find places to work when out and about. Perhaps with coffee, cake or a pint? Let Loc8r help you find the place you\'re looking for.', 
 
-				"locations": 	[	this.test_location_barista(),
-									this.test_location_coava(),
-									this.test_location_reup(),
-									this.test_location_cafe_evangalist()	]
+				"locations": 	responseBody,
+				"message": 		message
 			};
 };
 
