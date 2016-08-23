@@ -38,4 +38,22 @@ module.exports.STATUS_INTERNAL_SERVER_ERRRO		= '500';
  	res.json(content);
  };
 
- 
+ module.exports.showErrors = function (req, res, status) {
+    // Local Variables
+    var title, content;
+
+    if (status === 404) {
+        title = "404 - Page Not Found";
+        content = "Oh dear. Looks like we can't find this page. Sorry.";
+    } else {
+        title = status + " - somthing's gone wrong";
+        content = "Something, somewhere, has gone just a little bit wrong.";
+    }
+
+    // Update the Result
+    res.status(status);
+    res.render('generic-text', {
+        "title": title,
+        "content": content
+    });
+};

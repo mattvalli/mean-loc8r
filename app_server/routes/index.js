@@ -8,7 +8,7 @@ var controller_other		= require('../controllers/controller_other');
 
 /* GET Request: LOCATIONS	*/
 router.get('/', 					controller_location.homelist		);
-router.get('/location', 			controller_location.locationInfo	);
+router.get('/location/:locationId', controller_location.getLocationDetailPage	);
 router.get('/location/review/new', 	controller_location.addReview		);
 
 /* GET Request: OTHERS		*/

@@ -12,7 +12,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Modules
-var util_geoJSON = require('../../app_api/utilities/utility_geoJSON');
+var util_rest       = require('../../app_api/utilities/utility_rest');
+var util_geoJSON    = require('../../app_api/utilities/utility_geoJSON');
 
 /***** TESTING *****/
 var testData = require('../testdata/test_locations');
@@ -80,24 +81,50 @@ var homelist_processData = function(data) {
 }
 
 /* GET 'Location' page */
-module.exports.locationInfo = function(req, res) {
+module.exports.getLocationDetailPage = function(req, res) {
     if (TESTING_VERBOSE === true ) 
         console.log("****\tEnter app_server.controllers.controller_locations.locationInfo\t****");
 
-	res.render('detail-location', { "title": 		'Location Info',
-									"location":  	testData.test_location_barista()	});
+    // Use API to query Location by ID
+    var requestOptions, path;
+    path = "/api/locations/" + req.params.locationId;
+    requestOptions = {
+        "url":      apiOptions.server + path,
+        "method":   "GET",
+        "json":     {} 
+    }
+
+    // Make the request
+    request(requestOptions, function(err, response, body) {
+        var data = body;
+
+        // Catch any other Responses than 200 - SUCCESS
+        if (response.statusCode !== 200) {
+            // Display Error Page
+            util_rest.showErrors(req, res, res.statusCode);
+            return;
+        }
+
+        // Handle Success
+        data.coords = {
+            lng:    body.coords[0],
+            lat:    body.coords[1]
+        };
+
+        if (TESTING_VERBOSE === true) { console.log("LOCATION: " + data.toString()); }
+        // Render the Detail Page
+        renderDetailPage(req,res,data);
+
+
+    });
 };
 
-/* GET 'Add Review' page */
-module.exports.addReview = function(req, res) {
-    if (TESTING_VERBOSE === true ) 
-        console.log("****\tEnter app_server.controllers.controller_locations.addReview\t****");
-    
-	res.render('form-location-review', { title: 'Add Review' });
+/* RENDERING - Detail Page */
+var renderDetailPage = function(req,res,data) {
+    res.render('detail-location', { "title":        'Location Info',
+                                    "location":     data                });
 };
 
-
-/* HELPER METHODS */
 var renderHomepage = function(req,res, responseBody) {
     if (TESTING_VERBOSE === true ) 
         console.log("****\tEnter app_server.controllers.controller_locations.renderHomepage\t****");
@@ -118,4 +145,34 @@ var renderHomepage = function(req,res, responseBody) {
 
     // Pass the Model data to the Template File
     res.render('list-locations', testData.testSampleListLocationsJSON(responseBody, message));
+};
+
+/* GET 'Add Review' page */
+module.exports.addReview = function(req, res) {
+    if (TESTING_VERBOSE === true ) 
+        console.log("****\tEnter app_server.controllers.controller_locations.addReview\t****");
+    
+	res.render('form-location-review', { title: 'Add Review' });
+};
+
+
+/* HELPER METHODS */
+var showErrors = function (req, res, status) {
+    // Local Variables
+    var title, content;
+
+    if (status === 404) {
+        title = "404 - Page Not Found";
+        content = "Oh dear. Looks like we can't find this page. Sorry.";
+    } else {
+        title = status + " - somthing's gone wrong";
+        content = "Something, somewhere, has gone just a little bit wrong.";
+    }
+
+    // Update the Result
+    res.status(status);
+    res.render('generic-text', {
+        "title": title,
+        "content": content
+    });
 };
